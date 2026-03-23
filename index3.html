@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suprise?</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            background: rgb(255, 132, 132);
+        }
+
+        .page {
+            position: absolute;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: transform 0.6s ease, opacity 0.6s ease;
+        }
+
+        .hidden {
+            transform: scale(2);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        button.main-btn,
+        button.scnd-btn {
+            position: absolute;
+            padding: 20px 40px;
+            height: 100px;
+            width: 800px;
+            font-size: 32px;
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            font-weight: bold;
+            border-width: 5px;
+            border-radius: 100px;
+            border-color: rgb(205, 3, 3);
+            background: white;
+            cursor: pointer;
+        }
+
+        button.yess,
+        button.noo {
+            font-size: 30px;
+            height: 70px;
+            width: 200px;
+            margin: 10px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: Georgia, 'Times New Roman', Times, serif;
+        }
+
+        .flower,
+        .daisy {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background-size: cover;
+            animation: float 20s linear infinite;
+        }
+
+        .flower {
+            background-image: url('./assests/cherry-blossom.png');
+        }
+
+        .daisy {
+            background-image: url('./assests/daisy.png');
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh);
+            }
+
+            100% {
+                transform: translateY(-10vh);
+            }
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(5, 180px);
+            gap: 100px;
+        }
+
+        .card {
+            width: 250px;
+            height: 300px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .inner {
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            position: relative;
+        }
+
+        .flipped {
+            transform: rotateY(180deg);
+        }
+
+        .front {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 20px;
+            backface-visibility: hidden;
+            background: white;
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            font-weight: bold;
+            font-size: 40px;
+            background-color: rgb(255, 225, 188);
+        }
+
+        .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 20px;
+            backface-visibility: hidden;
+            background: white;
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            font-weight: bold;
+            font-size: 40px;
+
+        }
+
+        .back {
+            transform: rotateY(180deg);
+        }
+
+        .back img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 20px;
+        }
+
+        .centered {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(1.5);
+            z-index: 10;
+        }
+
+        .random-block {
+            position: absolute;
+            width: 140px;
+            height: 160px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+            opacity: 1;
+            transition: opacity 0.6s ease;
+        }
+
+        .fade-out {
+            opacity: 0;
+        }
+
+        .zoom-in {
+            transform: scale(3);
+            z-index: 20;
+            transition: transform 0.6s ease;
+        }
+
+        #detailPage {
+            background: white;
+            color: black;
+            flex-direction: row;
+            padding: 40px;
+            gap: 40px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <audio id="bgMusic" src="./assests/dhun.mp3" hidden loop></audio>
+
+    <div class="flower" style="right:10%; animation-delay:0s"></div>
+    <div class="flower" style="right:30%; animation-delay:5s"></div>
+    <div class="flower" style="right:60%; animation-delay:10s"></div>
+    <div class="flower" style="right:80%; animation-delay:15s"></div>
+
+    <div class="daisy" style="left:10%; animation-delay:0s"></div>
+    <div class="daisy" style="left:30%; animation-delay:5s"></div>
+    <div class="daisy" style="left:60%; animation-delay:10s"></div>
+    <div class="daisy" style="left:80%; animation-delay:15s"></div>
+
+    <div id="page1" class="page">
+        <button class="main-btn" onclick="goToPage2()">Welcome to Vanshika's Heart 💖</button>
+    </div>
+
+    <div id="page2" class="page hidden">
+        <button class="scnd-btn" onclick="askQuestion()">Here you will find only five things.</button>
+    </div>
+
+    <div id="questionBox" class="page hidden">
+        <p
+            style="font-size:50px; font-weight:bold; font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif ; ">
+            You really wanna know?</p>
+        <button class="yess" onclick="yesAction()">Yes</button>
+        <button class="noo" onclick="noAction()">No</button>
+    </div>
+
+    <div id="page3" class="page hidden">
+        <div class="grid">
+            <div class="card" onclick="handleClick(1,this)">
+                <div class="inner">
+                    <div class="front">Huh??</div>
+                    <div class="back"><img src="./assests/second.jpeg"></div>
+                </div>
+            </div>
+            <div class="card" onclick="handleClick(2,this)">
+                <div class="inner">
+                    <div class="front">Food</div>
+                    <div class="back"><img src="./assests/fourth.jpeg"></div>
+                </div>
+            </div>
+            <div class="card" onclick="handleClick(3,this)">
+                <div class="inner">
+                    <div class="front">Snap</div>
+                    <div class="back"><img src="./assests/fifth.jpeg"></div>
+                </div>
+            </div>
+            <div class="card" onclick="handleClick(4,this)">
+                <div class="inner">
+                    <div class="front">Makeup</div>
+                    <div class="back"><img src="./assests/first.jpeg"></div>
+                </div>
+            </div>
+            <div class="card" onclick="handleClick(5,this)">
+                <div class="inner">
+                    <div class="front">Dayout</div>
+                    <div class="back"><img src="./assests/third.jpeg"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="detailPage" class="page hidden">
+        <div style="flex:1; display:flex; justify-content:center; align-items:center;">
+            <img id="detailImg" style="max-width:90%; max-height:80vh; border-radius:20px;">
+        </div>
+        <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+            <h1 id="detailTitle"></h1>
+            <p id="detailText"></p>
+            <button onclick="goNext()"
+                style="height: 40px; width: 100px; font-size: 16px; font-family: Georgia, 'Times New Roman', Times, serif; cursor: pointer;">Back</button>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 5;
+
+        let myImages = [
+            "assests/images/img1.jpeg",
+            "assests/images/img2.jpeg",
+            "assests/images/img3.jpeg",
+            "assests/images/img4.jpeg",
+            "assests/images/img5.jpeg",
+            "assests/images/img6.jpeg",
+            "assests/images/img7.jpeg",
+            "assests/images/img8.jpeg",
+            "assests/images/img9.jpeg",
+            "assests/images/img10.jpeg",
+            "assests/images/img11.jpeg",
+            "assests/images/img12.jpeg",
+            "assests/images/img13.jpeg",
+            "assests/images/img14.jpeg",
+            "assests/images/img15.jpeg",
+            "assests/images/img16.jpeg",
+            "assests/images/img17.jpeg",
+            "assests/images/img18.jpeg",
+            "assests/images/img19.jpeg",
+            "assests/images/img20.jpeg",
+            "assests/images/img21.jpeg",
+            "assests/images/img22.jpeg",
+            "assests/images/img23.jpeg",
+            "assests/images/img24.jpeg",
+            "assests/images/img25.jpeg",
+            "assests/images/img26.jpeg",
+            "assests/images/img27.jpeg",
+            "assests/images/img28.jpeg",
+            "assests/images/img29.jpeg",
+            "assests/images/img30.jpeg",
+            "assests/images/img31.jpeg",
+            "assests/images/img32.jpeg",
+            "assests/images/img33.jpeg",
+            "assests/images/img34.jpeg",
+            "assests/images/img35.jpeg",
+            "assests/images/img36.jpeg",
+            // "assests/images/img37.jpeg",
+            // "assests/images/img38.jpeg",
+            // "assests/images/img39.jpeg",
+            // "assests/images/img40.jpeg",
+        ];
+
+        let imageData = {
+            "assests/images/img1.jpeg": { title: "Vanshika's Birthday", text: "My favorite place in the world is right here. ✨📍" },
+            "assests/images/img2.jpeg": { title: "Mading Her Special With My Love 💖", text: "You make every day feel like a celebration. 🥂🎊" },
+            "assests/images/img3.jpeg": { title: "My Cutie Pie 🌼", text: "Found the person who matches my level of crazy. 😜❤️✨" },
+            "assests/images/img4.jpeg": { title: "You're More Tastier Than Dosa 💕", text: "Just a girl and her favorite view. 🎀👩‍❤️‍👨✨" },
+            "assests/images/img5.jpeg": { title: "Cutest Colleague 🌼", text: "Hearts in our eyes and you on my mind. 💕✨" },
+            "assests/images/img6.jpeg": { title: "The Day She Turned Mine 💫", text: "Collected another favorite moment with you. ✨📸" },
+            "assests/images/img7.jpeg": { title: "Morning Love 💖", text: "Sunshine, fresh air, and you. ☀️🌿💞" },
+            "assests/images/img8.jpeg": { title: "Counting More & More", text: "Better together, always. 🤎♾️✨" },
+            "assests/images/img9.jpeg": { title: "That Moment Was Magical 💫", text: "In a world full of lights, I’m still looking at you. ✨🌙🖤" },
+            "assests/images/img10.jpeg": { title: "New Year, Old Us", text: "Another year of making memories with my favorite person. ✨🎂" },
+            "assests/images/img11.jpeg": { title: "Falling Deeply Into Each Other 💕", text: "The only gift I need under the tree. 🎄🎁✨" },
+            "assests/images/img12.jpeg": { title: "Together Forever 🌼", text: "The safest place to rest my head. 🤍💤✨" },
+            "assests/images/img13.jpeg": { title: "Looking Like A Couple 💫", text: "Main character energy with my favorite person. ❤️✨👑" },
+            "assests/images/img14.jpeg": { title: "More Enhanced 💫", text: "Found my forever plus one. ❤️💼✨" },
+            "assests/images/img15.jpeg": { title: " We look Good Together💖", text: "Good food, better company. 🍷✨🥘" },
+            "assests/images/img16.jpeg": { title: "Falling for you Everyday 🌸", text: "Merry everything and a little bit more with you. 🎄✨❤️" },
+            "assests/images/img17.jpeg": { title: "Into the 90s ✨", text: "You’re the rose in my garden of life. 🌹✨💖" },
+            "assests/images/img18.jpeg": { title: "LOVE BIRDS 💕", text: "The best part of my 'Happy' is you. 💋🌹✨" },
+            "assests/images/img19.jpeg": { title: "Seeing Her Happy Is The Best View 🌼", text: "The best part of my 'Happy' is you. 🎂🫂✨" },
+            "assests/images/img20.jpeg": { title: "Good Vibes Stays Together 💫", text: "In every lifetime, I’d still choose you. 🖤🎞️✨" },
+            "assests/images/img21.jpeg": { title: " Wifey Hubby 💫", text: "A little bit of sugar, a whole lot of us. 💋📸" },
+            "assests/images/img22.jpeg": { title: "Spending Whole day Together 💖", text: "In every lifetime, I’d still choose you. 🖤🎞️" },
+            "assests/images/img23.jpeg": { title: "Sun Kissed For Real 🌸", text: "Power couple energy. ❤️💼" },
+            "assests/images/img24.jpeg": { title: "Newly Met ✨", text: "Life is better in pink and hearts. 💕🦋" },
+            "assests/images/img25.jpeg": { title: "Relaxing Moment 💕", text: "Making every moment feel like a holiday. 🎄🥂" },
+            "assests/images/img26.jpeg": { title: "Started Falling In Love 🌼", text: "My favorite place in the world is right here. ☁️🤍" },
+            "assests/images/img27.jpeg": { title: "Best Friend ERA💫", text: "Collect moments, not things. 🌿👟" },
+            "assests/images/img28.jpeg": { title: "Our First Trip 💫", text: "Found the only person who makes winter feel like summer. ❄️🔥" },
+            "assests/images/img29.jpeg": { title: "Lovey Dovey💫", text: "Double the trouble, double the love. ✌️📸" },
+            "assests/images/img30.jpeg": { title: "Drunk Still Together 💖", text: "Proof that we’re the main characters of this story. 🎬🤪" },
+            "assests/images/img31.jpeg": { title: "Love Birds On Roof 🌸", text: "Keep the peace and love the chaos. ✌️💞" },
+            "assests/images/img32.jpeg": { title: "I want to tattoo it 💕", text: "Stuck like glue, and I’m perfectly okay with it. 🍯👯" },
+            "assests/images/img33.jpeg": { title: "Aesthetic Couple💫", text: "Just a soulmate thing. 🥰♾️" },
+            "assests/images/img34.jpeg": { title: "Heart Filled with Your Love💫", text: "Life isn't perfect, but our selfies come pretty close. 🤳✨" },
+            "assests/images/img35.jpeg": { title: "Pretty Little Babyy 💫", text: "Pure happiness captured. 💋🦋" },
+            "assests/images/img36.jpeg": { title: "I Wanna Eat You 💫", text: "Stole a kiss, keeping it forever. 💋🤫" },
+        };
+
+        function goToPage2() { page1.classList.add('hidden'); setTimeout(() => page2.classList.remove('hidden'), 600); }
+        function askQuestion() { page2.classList.add('hidden'); setTimeout(() => questionBox.classList.remove('hidden'), 600); }
+        function yesAction() { questionBox.classList.add('hidden'); setTimeout(() => page3.classList.remove('hidden'), 600); }
+        function noAction() { questionBox.classList.add('hidden'); setTimeout(() => page1.classList.remove('hidden'), 600); }
+
+        function handleClick(num, el) {
+            let inner = el.querySelector('.inner');
+            if (num === currentStep) {
+                inner.classList.add('flipped');
+                currentStep--;
+                if (num === 1) finalEffect(el);
+            } else if (num < currentStep) inner.classList.remove('flipped');
+        }
+
+        function finalEffect(card) {
+            document.getElementById('bgMusic').play();
+            document.querySelectorAll('.card').forEach(c => { if (c !== card) c.style.display = 'none'; });
+            card.classList.add('centered');
+
+            let positions = [];
+            for (let y = 0; y < window.innerHeight; y += 170) {
+                for (let x = 0; x < window.innerWidth; x += 150) { positions.push({ x, y }); }
+            }
+            positions.sort(() => Math.random() - 0.5);
+
+            let total = positions.length;
+            let duration = 15000;
+            let delayStep = duration / total;
+
+            positions.forEach((pos, index) => {
+                setTimeout(() => {
+                    let div = document.createElement('div');
+                    div.className = 'random-block';
+                    let img = myImages[Math.floor(Math.random() * myImages.length)];
+                    div.style.backgroundImage = `url(${img})`;
+                    div.style.top = pos.y + 'px'; div.style.left = pos.x + 'px';
+                    div.setAttribute('data-img', img);
+                    div.onclick = () => openDetailPage(div);
+                    document.body.appendChild(div);
+                    setTimeout(() => { div.style.opacity = 1; }, 50);
+                }, index * delayStep);
+            });
+        }
+
+        function openDetailPage(clickedBlock) {
+            const img = clickedBlock.getAttribute('data-img');
+            document.querySelectorAll('.random-block').forEach(b => {
+                if (b !== clickedBlock) b.classList.add('fade-out');
+            });
+            clickedBlock.classList.add('zoom-in');
+
+            setTimeout(() => {
+                document.querySelectorAll('.random-block').forEach(b => b.remove());
+                page3.classList.add('hidden');
+                detailPage.classList.remove('hidden');
+
+                let data = imageData[img] || { title: "Special 💖", text: "A beautiful memory." };
+                document.getElementById('detailImg').src = img;
+                document.getElementById('detailTitle').innerText = data.title;
+                document.getElementById('detailText').innerText = data.text;
+            }, 600);
+        }
+
+        // Updated function to take you back
+        function goNext() {
+            detailPage.classList.add('hidden');
+            setTimeout(() => {
+                page3.classList.remove('hidden');
+                // Re-runs the heart effect so she can see the images again
+                let centerCard = document.querySelector('.card.centered');
+                finalEffect(centerCard);
+            }, 600);
+        }
+    </script>
+
+</body>
+
+</html>
